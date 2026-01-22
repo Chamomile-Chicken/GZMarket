@@ -1,0 +1,25 @@
+name: "Hotfix"
+description: "긴급 버그 수정"
+title: "hotfix: "
+labels: ["hotfix"]
+body:
+  - type: input
+    id: branch_keyword
+    attributes:
+      label: "Branch keyword"
+      description: "브랜치 키워드 (예: login-500, prod-null)"
+      placeholder: "login-500"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "이슈 설명"
+      description: "문제 상황 / 영향 / 수정 내용"
+      placeholder: |
+        예)
+        - 비동기 오류로 인한 수정
+        - 로그인 시 500 발생
+    validations:
+      required: true

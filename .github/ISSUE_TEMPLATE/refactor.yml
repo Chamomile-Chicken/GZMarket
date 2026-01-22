@@ -1,0 +1,25 @@
+name: "Refactor"
+description: "리팩토링"
+title: "refactor: "
+labels: ["refactor"]
+body:
+  - type: input
+    id: branch_keyword
+    attributes:
+      label: "Branch keyword"
+      description: "브랜치 키워드 (예: notification-cleanup)"
+      placeholder: "notification-cleanup"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "이슈 설명"
+      description: "리팩토링 이유 / 목표 / 범위"
+      placeholder: |
+        예)
+        - NotificationService 구조 정리
+        - 테스트 용이성 개선
+    validations:
+      required: true

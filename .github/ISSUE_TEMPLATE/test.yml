@@ -1,0 +1,25 @@
+name: "Test"
+description: "테스트 추가/수정"
+title: "test: "
+labels: ["test"]
+body:
+  - type: input
+    id: branch_keyword
+    attributes:
+      label: "Branch keyword"
+      description: "브랜치 키워드 (예: user-service-test)"
+      placeholder: "user-service-test"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "이슈 설명"
+      description: "추가/수정할 테스트 내용"
+      placeholder: |
+        예)
+        - UserService 단위 테스트 추가
+        - 예외 케이스 보강
+    validations:
+      required: true

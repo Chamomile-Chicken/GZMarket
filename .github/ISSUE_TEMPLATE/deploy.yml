@@ -1,0 +1,25 @@
+name: "Deploy"
+description: "배포 관련 작업"
+title: "deploy: "
+labels: ["deploy"]
+body:
+  - type: input
+    id: branch_keyword
+    attributes:
+      label: "Branch keyword"
+      description: "브랜치 키워드 (예: v1-0-0, ecs-config)"
+      placeholder: "v1-0-0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "이슈 설명"
+      description: "배포 목적 / 변경 내용 / 체크 포인트"
+      placeholder: |
+        예)
+        - v1.0.0 배포
+        - 환경변수/시크릿 점검
+    validations:
+      required: true

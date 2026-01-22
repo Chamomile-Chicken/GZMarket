@@ -1,0 +1,25 @@
+name: "Chore"
+description: "기타 작업 (설정/문서/정리)"
+title: "chore: "
+labels: ["chore"]
+body:
+  - type: input
+    id: branch_keyword
+    attributes:
+      label: "Branch keyword"
+      description: "브랜치 키워드 (예: update-ci, add-template)"
+      placeholder: "add-template"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "이슈 설명"
+      description: "무엇을 정리/추가/수정하는지"
+      placeholder: |
+        예)
+        - 깃허브 템플릿 추가
+        - CI 설정 변경
+    validations:
+      required: true

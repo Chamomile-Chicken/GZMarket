@@ -1,0 +1,97 @@
+name: Create branch from issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  create-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const repo = context.repo;
+
+            // 1) Issue Form body에서 Branch keyword 파싱
+            // Issue Forms는 본문에 아래처럼 들어감:
+            // ### Branch keyword
+            // user-create
+            const body = issue.body || "";
+            const match = body.match(/### Branch keyword\s*\n\s*([^\n\r]+)/i);
+            const keywordRaw = match ? match[1].trim() : "";
+
+            if (!keywordRaw) {
+              core.warning("Branch keyword not found. Skip creating branch.");
+              return;
+            }
+
+            // 2) 키워드 정규화 (소문자 + [a-z0-9-]만)
+            const keyword = keywordRaw
+              .toLowerCase()
+              .replace(/[^a-z0-9-]/g, "-")
+              .replace(/-+/g, "-")
+              .replace(/^-|-$/g, "");
+
+            // 3) 라벨 기반 prefix 결정
+            const labels = (issue.labels || []).map(l => (typeof l === "string" ? l : l.name));
+            const prefixMap = {
+              feature: "feat",
+              hotfix: "hotfix",
+              refactor: "refactor",
+              deploy: "deploy",
+              chore: "chore",
+              test: "test",
+            };
+
+            let prefix = "chore";
+            for (const key of Object.keys(prefixMap)) {
+              if (labels.includes(key)) {
+                prefix = prefixMap[key];
+                break;
+              }
+            }
+
+            const issueNumber = issue.number;
+
+            // ✅ 원하는 브랜치 형태: feat/#123-login-api
+            const branchName = `${prefix}/#${issueNumber}-${keyword}`;
+
+            // 4) 기본 브랜치 SHA 가져오기
+            const defaultBranch = context.payload.repository.default_branch;
+            const base = await github.rest.git.getRef({
+              owner: repo.owner,
+              repo: repo.repo,
+              ref: `heads/${defaultBranch}`,
+            });
+            const sha = base.data.object.sha;
+
+            // 5) 브랜치 생성 (이미 있으면 스킵)
+            try {
+              await github.rest.git.createRef({
+                owner: repo.owner,
+                repo: repo.repo,
+                ref: `refs/heads/${branchName}`,
+                sha,
+              });
+            } catch (e) {
+              if (e.status === 422) {
+                core.warning(`Branch already exists: ${branchName}`);
+              } else {
+                throw e;
+              }
+            }
+
+            // 6) 이슈에 댓글로 안내
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: issueNumber,
+              body: `✅ 브랜치 생성됨: \`${branchName}\``,
+            });
