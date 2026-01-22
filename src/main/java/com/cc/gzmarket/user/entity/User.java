@@ -17,5 +17,6 @@ import lombok.NoArgsConstructor;
 public class User extends BaseEntity {
 
 	String nickname;
+	
 }
 
