@@ -30,7 +30,7 @@ jobs:
                   repo: context.repo.repo,
                   name: label.name,
                   color: label.color,
-                  description: label.description
+                  description: label.description,
                 });
                 console.log(`✅ Created: ${label.name}`);
               } catch (error) {
@@ -41,3 +41,4 @@ jobs:
                   throw error;
                 }
               }
+            }
